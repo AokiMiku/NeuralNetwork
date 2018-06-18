@@ -14,6 +14,8 @@ namespace NeuralNetwork
 		public float[] Weights { get; private set; }
 		public float[] Biases { get; private set; }
 
+		private const char seperator = ';';
+
 		public Genome(int layerCount, int[] neuronsPerLayer, float[] weights, float[] biases)
 		{
 			if (neuronsPerLayer == null)
@@ -38,6 +40,7 @@ namespace NeuralNetwork
 			{
 				neuronsPerLayer[i] = neuroNet.NeuroLayers[i].Neurons.Length;
 			}
+			this.NeuronsPerLayer = neuronsPerLayer;
 
 			List<float> Weights = new List<float>();
 			for (int i = 1; i < this.LayerCount; i++)
@@ -68,12 +71,12 @@ namespace NeuralNetwork
 			Genome genome = new Genome(neuroNet);
 			string stringifiedGenome = "";
 
-			stringifiedGenome += genome.LayerCount + "-";
-			stringifiedGenome += genome.NeuronsPerLayer.ToString('_') + "-";
-			stringifiedGenome += genome.Weights.ToString('_') + "-";
+			stringifiedGenome += genome.LayerCount + seperator;
+			stringifiedGenome += genome.NeuronsPerLayer.ToString('_') + seperator;
+			stringifiedGenome += genome.Weights.ToString('_') + seperator;
 			stringifiedGenome += genome.Biases.ToString('_');
 
-			using (StreamWriter streamWriter = new StreamWriter(Environment.CurrentDirectory + "\\" + fileName + ".aps"))
+			using (StreamWriter streamWriter = new StreamWriter(Environment.CurrentDirectory + "\\Data\\" + fileName + ".aps"))
 			{
 				streamWriter.Write(stringifiedGenome);
 				streamWriter.Flush();
@@ -85,14 +88,14 @@ namespace NeuralNetwork
 		{
 			string stringifiedGenome = "";
 
-			using (StreamReader streamReader = new StreamReader(Environment.CurrentDirectory + "\\" + fileName + ".aps"))
+			using (StreamReader streamReader = new StreamReader(Environment.CurrentDirectory + "\\Data\\" + fileName + ".aps"))
 			{
 				stringifiedGenome = streamReader.ReadToEnd();
 				streamReader.Close();
 			}
 
-			int layerCount = int.Parse(stringifiedGenome.Substring(0, stringifiedGenome.IndexOf('-')));
-			stringifiedGenome = stringifiedGenome.Substring(stringifiedGenome.IndexOf('-') + 1);
+			int layerCount = int.Parse(stringifiedGenome.Substring(0, stringifiedGenome.IndexOf(seperator)));
+			stringifiedGenome = stringifiedGenome.Substring(stringifiedGenome.IndexOf(seperator) + 1);
 
 			List<int> neuronsPerLayer = new List<int>();
 			stringifiedGenome = ExtractValues(stringifiedGenome, neuronsPerLayer);
@@ -108,16 +111,16 @@ namespace NeuralNetwork
 
 		private static string ExtractValues(string stringifiedGenome, List<float> listToFill)
 		{
-			while (stringifiedGenome.IndexOf('-') > stringifiedGenome.IndexOf('_'))
+			while (stringifiedGenome.IndexOf(seperator) > stringifiedGenome.IndexOf('_'))
 			{
 				listToFill.Add(float.Parse(stringifiedGenome.Substring(0, stringifiedGenome.IndexOf('_'))));
 
 				stringifiedGenome = stringifiedGenome.Substring(stringifiedGenome.IndexOf('_') + 1);
 			}
 
-			if (stringifiedGenome.Contains('-'))
+			if (stringifiedGenome.Contains(seperator))
 			{
-				stringifiedGenome = stringifiedGenome.Substring(stringifiedGenome.IndexOf('-') + 1);
+				stringifiedGenome = stringifiedGenome.Substring(stringifiedGenome.IndexOf(seperator) + 1);
 			}
 			return stringifiedGenome;
 		}

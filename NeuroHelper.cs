@@ -33,7 +33,7 @@ namespace NeuralNetwork
 			string s = "";
 			for (int i = 0; i < value.Length; i++)
 			{
-				s += value + seperator.ToString();
+				s += value[i] + seperator.ToString();
 			}
 			s = s.Substring(0, s.Length - 1);
 
