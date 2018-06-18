@@ -16,10 +16,17 @@ namespace NeuralNetwork
 
 		public Genome(int layerCount, int[] neuronsPerLayer, float[] weights, float[] biases)
 		{
+			if (neuronsPerLayer == null)
+				throw new ArgumentNullException(nameof(neuronsPerLayer));
+			if (weights == null)
+				throw new ArgumentNullException(nameof(weights));
+			if (biases == null)
+				throw new ArgumentNullException(nameof(biases));
+
 			LayerCount = layerCount;
-			NeuronsPerLayer = neuronsPerLayer ?? throw new ArgumentNullException(nameof(neuronsPerLayer));
-			Weights = weights ?? throw new ArgumentNullException(nameof(weights));
-			Biases = biases ?? throw new ArgumentNullException(nameof(biases));
+			NeuronsPerLayer = neuronsPerLayer;
+			Weights = weights;
+			Biases = biases;
 		}
 
 		public Genome(NeuroNet neuroNet)
