@@ -26,7 +26,7 @@ namespace NeuralNetwork
 
 		public static float Sigmoid(float value)
 		{
-			return 2f / (1 + (float)Math.Exp(-2f * value)) - 1f;
+			return (2f / (1 + (float)Math.Exp(-2f * value))) - 1f;
 		}
 		public static string ToString(this float[] value, char seperator)
 		{

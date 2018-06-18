@@ -15,7 +15,7 @@
 
 		private NeuroNet()
 		{
-
+			// default ctor
 		}
 
 		public NeuroNet(int[] layers)
