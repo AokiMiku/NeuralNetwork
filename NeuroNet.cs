@@ -1,9 +1,12 @@
-﻿namespace NeuralNetwork
+﻿using System;
+
+namespace NeuralNetwork
 {
 	public class NeuroNet
 	{
 		internal NeuroLayer[] NeuroLayers { get; private set; }
 		public float[] Outputs { get; private set; }
+		public event EventHandler<FeedForwardFinishedEventArgs> FeedForwardFinished;
 
 		public int LayerCount
 		{
@@ -86,6 +89,7 @@
 				this.Outputs = this.NeuroLayers[i].FeedForward(this.Outputs);
 			}
 
+			this.FeedForwardFinished?.Invoke(this, new FeedForwardFinishedEventArgs(this.Outputs));
 			return this.Outputs;
 		}
 
