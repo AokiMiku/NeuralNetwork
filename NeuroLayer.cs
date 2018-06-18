@@ -1,6 +1,6 @@
 ﻿namespace NeuralNetwork
 {
-	public class NeuroLayer
+	internal class NeuroLayer
 	{
 		public Neuron[] Neurons { get; private set; }
 		public float[] Inputs { get; private set; }
@@ -60,7 +60,7 @@
 		internal float[] FeedForwardInput(float[] inputs)
 		{
 			this.CopyInputs(inputs);
-			this.Outputs = inputs;
+			this.Outputs = this.Inputs;
 
 			return this.Outputs;
 		}

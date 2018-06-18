@@ -2,7 +2,7 @@
 
 namespace NeuralNetwork
 {
-	public class Neuron
+	internal class Neuron
 	{
 		public float[] Weights { get; private set; }
 		public float Bias { get; private set; }
