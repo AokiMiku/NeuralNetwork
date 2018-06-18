@@ -21,6 +21,7 @@
 		public NeuroNet(int[] layers)
 		{
 			this.NeuroLayers = new NeuroLayer[layers.Length];
+
 			this.NeuroLayers[0] = new NeuroLayer(0, layers[0]);
 			for (int i = 1; i < layers.Length; i++)
 			{
@@ -31,9 +32,49 @@
 		public NeuroNet(NeuroNet copy)
 		{
 			this.NeuroLayers = new NeuroLayer[copy.NeuroLayers.Length];
+
 			for (int i = 0; i < this.NeuroLayers.Length; i++)
 			{
 				this.NeuroLayers[i] = new NeuroLayer(copy.NeuroLayers[i]);
+			}
+		}
+
+		public NeuroNet(Genome genome)
+		{
+			LoadFromGenome(genome);
+		}
+
+		private void LoadFromGenome(Genome genome)
+		{
+			this.NeuroLayers = new NeuroLayer[genome.LayerCount];
+
+			this.NeuroLayers[0] = new NeuroLayer(0, genome.NeuronsPerLayer[0]);
+			for (int i = 1; i < this.LayerCount; i++)
+			{
+				this.NeuroLayers[i] = new NeuroLayer(genome.NeuronsPerLayer[i - 1], genome.NeuronsPerLayer[i]);
+			}
+
+			int idx = 0;
+			for (int i = 0; i < this.LayerCount; i++)
+			{
+				for (int j = 0; j < this.NeuroLayers[i].Neurons.Length; j++)
+				{
+					for (int k = 0; k < this.NeuroLayers[i].Neurons[j].Weights.Length; k++)
+					{
+						this.NeuroLayers[i].Neurons[j].Weights[k] = genome.Weights[idx];
+
+						idx++;
+					}
+				}
+			}
+
+			idx = 0;
+			for (int i = 0; i < this.LayerCount; i++)
+			{
+				for (int j = 0; j < this.NeuroLayers[i].Neurons.Length; j++)
+				{
+					this.NeuroLayers[i].Neurons[j].Bias = genome.Biases[idx];
+				}
 			}
 		}
 
@@ -80,6 +121,16 @@
 			}
 
 			return child;
+		}
+
+		public void Save(string fileName)
+		{
+			Genome.Save(this, fileName);
+		}
+
+		public void Load(string fileName)
+		{
+			this.LoadFromGenome(Genome.Load(fileName));
 		}
 	}
 }

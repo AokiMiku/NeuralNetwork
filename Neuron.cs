@@ -4,8 +4,8 @@ namespace NeuralNetwork
 {
 	internal class Neuron
 	{
-		public float[] Weights { get; private set; }
-		public float Bias { get; private set; }
+		public float[] Weights { get; internal set; }
+		public float Bias { get; internal set; }
 
 		public Neuron(int neuronsInPrevLayer)
 		{
