@@ -71,7 +71,7 @@ namespace NeuralNetwork
 			Genome genome = new Genome(neuroNet);
 			string stringifiedGenome = "";
 
-			stringifiedGenome += genome.LayerCount + seperator;
+			stringifiedGenome += genome.LayerCount + seperator.ToString();
 			stringifiedGenome += genome.NeuronsPerLayer.ToString('_') + seperator;
 			stringifiedGenome += genome.Weights.ToString('_') + seperator;
 			stringifiedGenome += genome.Biases.ToString('_');
