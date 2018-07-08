@@ -40,6 +40,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FeedForwardFinishedEventArgs.cs" />
     <Compile Include="Genome.cs" />
     <Compile Include="NeuroHelper.cs" />
     <Compile Include="NeuroLayer.cs" />
