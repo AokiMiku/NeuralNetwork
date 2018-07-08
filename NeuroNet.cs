@@ -14,7 +14,7 @@ namespace NeuralNetwork
 		{
 			get
 			{
-				return this.Neurons[this.Neurons.Length];
+				return this.Neurons[this.Neurons.Length - 1];
 			}
 		}
 		public event EventHandler<FeedForwardFinishedEventArgs> FeedForwardFinished;
@@ -121,7 +121,7 @@ namespace NeuralNetwork
 				{
 					float[] neuronWeights = new float[weights[i][j].Length];
 
-					for (int k = 0; k < weights[k][j].Length; k++)
+					for (int k = 0; k < weights[i][j].Length; k++)
 					{
 						neuronWeights[k] = weights[i][j][k];
 					}
@@ -144,7 +144,7 @@ namespace NeuralNetwork
 				this.Neurons[0][i] = inputs[i];
 			}
 
-			for (int i = 1; i < inputs.Length; i++)
+			for (int i = 1; i < this.LayerCount; i++)
 			{
 				for (int j = 0; j < this.Neurons[i].Length; j++)
 				{
@@ -165,7 +165,7 @@ namespace NeuralNetwork
 
 		public void Mutate()
 		{
-			for (int i = 1; i < this.layers.Length; i++)
+			for (int i = 1; i < this.LayerCount; i++)
 			{
 				//if (NeuroHelper.RandomNext(0f, 1f) <= NeuroHelper.LayerMutateChance)
 				//{
@@ -229,6 +229,10 @@ namespace NeuralNetwork
 		private void LoadFromGenome(Genome genome)
 		{
 			this.layers = new int[genome.LayerCount];
+			for (int i = 0; i < this.layers.Length; i++)
+			{
+				this.layers[i] = genome.NeuronsPerLayer[i];
+			}
 
 			this.InitNeurons();
 			this.InitWeightsAndBiases();
