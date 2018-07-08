@@ -14,6 +14,8 @@ namespace NeuralNetwork
 		public float[] Weights { get; private set; }
 		public float[] Biases { get; private set; }
 
+		public static readonly string SAVE_DIRECTORY = Environment.CurrentDirectory + "\\Data\\";
+
 		private const char seperator = ';';
 
 		public Genome(int layerCount, int[] neuronsPerLayer, float[] weights, float[] biases)
@@ -76,7 +78,7 @@ namespace NeuralNetwork
 			stringifiedGenome += genome.Weights.ToString('_') + seperator;
 			stringifiedGenome += genome.Biases.ToString('_');
 
-			using (StreamWriter streamWriter = new StreamWriter(Environment.CurrentDirectory + "\\Data\\" + fileName + ".aps"))
+			using (StreamWriter streamWriter = new StreamWriter(SAVE_DIRECTORY + fileName + ".aps"))
 			{
 				streamWriter.Write(stringifiedGenome);
 				streamWriter.Flush();
@@ -88,7 +90,7 @@ namespace NeuralNetwork
 		{
 			string stringifiedGenome = "";
 
-			using (StreamReader streamReader = new StreamReader(Environment.CurrentDirectory + "\\Data\\" + fileName + ".aps"))
+			using (StreamReader streamReader = new StreamReader(SAVE_DIRECTORY + fileName + ".aps"))
 			{
 				stringifiedGenome = streamReader.ReadToEnd();
 				streamReader.Close();
