@@ -43,8 +43,6 @@
     <Compile Include="FeedForwardFinishedEventArgs.cs" />
     <Compile Include="Genome.cs" />
     <Compile Include="NeuroHelper.cs" />
-    <Compile Include="NeuroLayer.cs" />
-    <Compile Include="Neuron.cs" />
     <Compile Include="NeuroNet.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
