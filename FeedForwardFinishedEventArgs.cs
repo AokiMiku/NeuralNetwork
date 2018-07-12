@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace NeuralNetwork
 {
@@ -9,6 +10,11 @@ namespace NeuralNetwork
 		public FeedForwardFinishedEventArgs(float[] outputs)
 		{
 			Outputs = outputs;
+		}
+
+		public FeedForwardFinishedEventArgs(List<float> outputs)
+		{
+			Outputs = outputs.ToArray();
 		}
 	}
 }
