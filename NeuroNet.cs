@@ -148,13 +148,14 @@ namespace NeuralNetwork
 			{
 				if (NeuroHelper.RandomNext(0f, 1f) <= NeuroHelper.LayerMutationChance)
 				{
-					this.layers[i]++;
-					this.Neurons[i].Add(0f);
+					this.layers[i]++; // increase the neuroncount of the layer
+					this.Neurons[i].Add(0f); // add the new neuron
+					this.Biases[i].Add(NeuroHelper.RandomNext()); // add a new bias for the new neuron
 					this.Weights[i].Add(new List<float>());
 
 					for (int j = 0; j < this.Weights[i - 1].Count; j++) // add new weight from each neuron in previous layer to the new mutated neuron
 					{
-						this.Weights[i][j].Add(NeuroHelper.RandomNext());
+						this.Weights[i][this.Weights[i].Count].Add(NeuroHelper.RandomNext()); // only add to the last neuron-weights-list
 					}
 
 					if (i < this.LayerCount - 1) // if not output-layer
@@ -188,20 +189,35 @@ namespace NeuralNetwork
 
 		public static NeuroNet Crossover(NeuroNet mother, NeuroNet father)
 		{
+			int[] fetchedLayers = new int[Math.Max(mother.layers.Length, father.layers.Length)];
+			for (int i = 0; i < fetchedLayers.Length; i++)
+			{
+				if (mother.layers[i] >= father.layers[i])
+				{
+					fetchedLayers[i] = mother.layers[i];
+				}
+				else
+				{
+					fetchedLayers[i] = father.layers[i];
+				}
+			}
+
 			NeuroNet child = new NeuroNet
 			{
-				layers = mother.layers
+				layers = fetchedLayers
 			};
 			child.InitNeurons();
 			child.InitWeightsAndBiases();
 
-			for (int i = 0; i < mother.Weights.Count; i++)
+
+			for (int i = 0; i < child.Weights.Count; i++)
 			{
-				for (int j = 0; j < mother.Weights[i].Count; j++)
+				for (int j = 0; j < child.Weights[i].Count; j++)
 				{
-					for (int k = 0; k < mother.Weights[i][j].Count; k++)
+					for (int k = 0; k < child.Weights[i][j].Count; k++)
 					{
-						if (NeuroHelper.RandomNext(0, 100) > 50)
+						if (!(k >= mother.Weights[i][j].Count && mother.Weights[i][j].Count < father.Weights[i][j].Count)
+							&& ((k >= father.Weights[i][j].Count && mother.Weights[i][j].Count > father.Weights[i][j].Count) || NeuroHelper.RandomNext(0, 100) > 50))
 						{
 							child.Weights[i][j][k] = mother.Weights[i][j][k];
 						}
@@ -211,7 +227,8 @@ namespace NeuralNetwork
 						}
 					}
 
-					if (NeuroHelper.RandomNext(0, 100) > 50)
+					if (!(j >= mother.Biases[i].Count && mother.Biases[i].Count < father.Biases[i].Count)
+							&& ((j >= father.Biases[i].Count && mother.Biases[i].Count > father.Biases[i].Count) || NeuroHelper.RandomNext(0, 100) > 50))
 					{
 						child.Biases[i][j] = mother.Biases[i][j];
 					}
