@@ -189,26 +189,7 @@ namespace NeuralNetwork
 
 		public static NeuroNet Crossover(NeuroNet mother, NeuroNet father)
 		{
-			int[] fetchedLayers = new int[Math.Max(mother.layers.Length, father.layers.Length)];
-			for (int i = 0; i < fetchedLayers.Length; i++)
-			{
-				if (mother.layers[i] >= father.layers[i])
-				{
-					fetchedLayers[i] = mother.layers[i];
-				}
-				else
-				{
-					fetchedLayers[i] = father.layers[i];
-				}
-			}
-
-			NeuroNet child = new NeuroNet
-			{
-				layers = fetchedLayers
-			};
-			child.InitNeurons();
-			child.InitWeightsAndBiases();
-
+			NeuroNet child = InitChild(mother, father);
 
 			for (int i = 0; i < child.Weights.Count; i++)
 			{
@@ -241,7 +222,31 @@ namespace NeuralNetwork
 
 			return child;
 		}
-		
+
+		private static NeuroNet InitChild(NeuroNet mother, NeuroNet father)
+		{
+			int[] fetchedLayers = new int[Math.Max(mother.layers.Length, father.layers.Length)];
+			for (int i = 0; i < fetchedLayers.Length; i++)
+			{
+				if (mother.layers[i] >= father.layers[i])
+				{
+					fetchedLayers[i] = mother.layers[i];
+				}
+				else
+				{
+					fetchedLayers[i] = father.layers[i];
+				}
+			}
+
+			NeuroNet child = new NeuroNet
+			{
+				layers = fetchedLayers
+			};
+			child.InitNeurons();
+			child.InitWeightsAndBiases();
+			return child;
+		}
+
 		private void LoadFromGenome(Genome genome)
 		{
 			this.layers = new int[genome.LayerCount];
