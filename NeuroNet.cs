@@ -174,7 +174,6 @@ namespace NeuralNetwork
 
 				if (NeuroHelper.RandomNext(0f, 1f) <= NeuroHelper.NeuronWeightMutationChance)
 				{
-					UnityEngine.Debug.Log("NeuronWeightMutateChance proc");
 					int neuronIndex = NeuroHelper.RandomNext(0, this.Neurons[i].Length);
 					int weightIndex = NeuroHelper.RandomNext(0, this.Weights[i][neuronIndex].Length);
 
@@ -186,7 +185,6 @@ namespace NeuralNetwork
 
 				if (NeuroHelper.RandomNext(0f, 1f) <= NeuroHelper.NeuronBiasMutationChance)
 				{
-					UnityEngine.Debug.Log("NeuronBiasMutateChance proc");
 					int neuronIndex = NeuroHelper.RandomNext(0, this.Neurons[i].Length);
 
 					this.Biases[i][neuronIndex] += NeuroHelper.RandomNext(-NeuroHelper.NeuronBiasMutationDefaultValue, NeuroHelper.NeuronBiasMutationDefaultValue);
@@ -203,22 +201,29 @@ namespace NeuralNetwork
 			child.InitNeurons();
 			child.InitWeightsAndBiases();
 
-			for (int i = 0; i < mother.layers.Length; i++)
+			for (int i = 0; i < mother.Weights.Length; i++)
 			{
-				for (int j = 0; j < mother.Neurons[i].Length; j++)
+				for (int j = 0; j < mother.Weights[i].Length; j++)
 				{
 					for (int k = 0; k < mother.Weights[i][j].Length; k++)
 					{
 						if (NeuroHelper.RandomNext(0, 100) > 50)
 						{
 							child.Weights[i][j][k] = mother.Weights[i][j][k];
-							child.Biases[i][j] = mother.Biases[i][j];
 						}
 						else
 						{
 							child.Weights[i][j][k] = father.Weights[i][j][k];
-							child.Biases[i][j] = father.Biases[i][j];
 						}
+					}
+
+					if (NeuroHelper.RandomNext(0, 100) > 50)
+					{
+						child.Biases[i][j] = mother.Biases[i][j];
+					}
+					else
+					{
+						child.Biases[i][j] = father.Biases[i][j];
 					}
 				}
 			}
