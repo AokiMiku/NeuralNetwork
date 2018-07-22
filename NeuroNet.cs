@@ -65,6 +65,7 @@ namespace NeuralNetwork
 
 		private void InitNeurons()
 		{
+			this.Neurons = new List<List<float>>();
 			for (int i = 0; i < this.layers.Length; i++)
 			{
 				this.Neurons.Add(new List<float>());
@@ -77,6 +78,9 @@ namespace NeuralNetwork
 
 		private void InitWeightsAndBiases()
 		{
+			this.Weights = new List<List<List<float>>>();
+			this.Biases = new List<List<float>>();
+
 			for (int i = 1; i < this.layers.Length; i++)
 			{
 				this.Weights.Add(new List<List<float>>());
@@ -98,6 +102,9 @@ namespace NeuralNetwork
 
 		private void InitWeightsAndBiases(List<List<List<float>>> weights, List<List<float>> biases)
 		{
+			this.Weights = new List<List<List<float>>>();
+			this.Biases = new List<List<float>>();
+
 			for (int i = 0; i < weights.Count; i++)
 			{
 				this.Weights.Add(new List<List<float>>());
