@@ -47,11 +47,12 @@ namespace NeuralNetwork
 			List<float> Weights = new List<float>();
 			for (int i = 1; i < this.LayerCount; i++)
 			{
-				for (int j = 0; j < neuroNet.Weights[i].Count; j++)
+				int index = i - 1;
+				for (int j = 0; j < neuroNet.Weights[index].Count; j++)
 				{
-					for (int k = 0; k < neuroNet.Weights[i][j].Count; k++)
+					for (int k = 0; k < neuroNet.Weights[index][j].Count; k++)
 					{
-						Weights.Add(neuroNet.Weights[i][j][k]);
+						Weights.Add(neuroNet.Weights[index][j][k]);
 					}
 				}
 			}
@@ -60,9 +61,10 @@ namespace NeuralNetwork
 			List<float> Biases = new List<float>();
 			for (int i = 1; i < this.LayerCount; i++)
 			{
-				for (int j = 0; j < neuroNet.Biases[i].Count; j++)
+				int index = i - 1;
+				for (int j = 0; j < neuroNet.Biases[index].Count; j++)
 				{
-					Biases.Add(neuroNet.Biases[i][j]);
+					Biases.Add(neuroNet.Biases[index][j]);
 				}
 			}
 			this.Biases = Biases.ToArray();

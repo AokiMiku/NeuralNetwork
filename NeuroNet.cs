@@ -32,6 +32,7 @@ namespace NeuralNetwork
 		private NeuroNet()
 		{
 			// default ctor
+			// used for creating empty networks while crossover
 		}
 
 		public NeuroNet(int[] layers)
@@ -81,20 +82,21 @@ namespace NeuralNetwork
 			this.Weights = new List<List<List<float>>>();
 			this.Biases = new List<List<float>>();
 
-			for (int i = 1; i < this.layers.Length; i++)
+			for (int i = 1; i < layers.Length; i++)
 			{
+				int index = i - 1;
+				int neuronsInPrevLayer = layers[index];
 				this.Weights.Add(new List<List<float>>());
-				int neuronsInPreviousLayer = this.layers[i - 1];
 				this.Biases.Add(new List<float>());
 
-				for (int j = 0; j < this.Neurons[i].Count; j++)
+				for (int j = 0; j < layers[i]; j++)
 				{
-					this.Weights[i].Add(new List<float>());
-					this.Biases[i].Add(NeuroHelper.RandomNext());
+					this.Weights[index].Add(new List<float>());
+					this.Biases[index].Add(NeuroHelper.RandomNext());
 
-					for (int k = 0; k < neuronsInPreviousLayer; k++)
+					for (int k = 0; k < neuronsInPrevLayer; k++)
 					{
-						this.Weights[i][j].Add(NeuroHelper.RandomNext());
+						this.Weights[index][j].Add(NeuroHelper.RandomNext());
 					}
 				}
 			}
