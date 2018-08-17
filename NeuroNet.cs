@@ -6,15 +6,15 @@ namespace NeuralNetwork
 {
 	public class NeuroNet
 	{
-		internal List<List<float>> Neurons { get; private set; }
-		internal List<List<List<float>>> Weights { get; private set; }
-		internal List<List<float>> Biases { get; private set; }
+		internal float[][] Neurons { get; private set; }
+		internal float[][][] Weights { get; private set; }
+		internal float[][] Biases { get; private set; }
 
-		public List<float> Outputs
+		public float[] Outputs
 		{
 			get
 			{
-				return this.Neurons[this.Neurons.Count - 1];
+				return this.Neurons[this.Neurons.Length - 1];
 			}
 		}
 		public event EventHandler<FeedForwardFinishedEventArgs> FeedForwardFinished;
@@ -66,66 +66,63 @@ namespace NeuralNetwork
 
 		private void InitNeurons()
 		{
-			this.Neurons = new List<List<float>>();
+			List<float[]> neurons = new List<float[]>();
 			for (int i = 0; i < this.layers.Length; i++)
 			{
-				this.Neurons.Add(new List<float>());
+				float[] layer = new float[this.layers[i]];
 				for (int j = 0; j < this.layers[i]; j++)
 				{
-					this.Neurons[i].Add(0f);
+					layer[j] = 0f;
 				}
+				neurons.Add(layer);
 			}
+			this.Neurons = neurons.ToArray();
 		}
 
-		private void InitWeightsAndBiases()
+		private void InitWeightsAndBiases(float[][][] presetWeights = null, float[][] presetBiases = null)
 		{
-			this.Weights = new List<List<List<float>>>();
-			this.Biases = new List<List<float>>();
+			List<float[][]> weights = new List<float[][]>();
+			List<float[]> biases = new List<float[]>();
 
-			for (int i = 1; i < layers.Length; i++)
+			for (int i = 1; i < this.layers.Length; i++)
 			{
-				int index = i - 1;
-				int neuronsInPrevLayer = layers[index];
-				this.Weights.Add(new List<List<float>>());
-				this.Biases.Add(new List<float>());
+				List<float[]> layerWeights = new List<float[]>();
+				float[] layerBiases = new float[this.layers[i]];
 
-				for (int j = 0; j < layers[i]; j++)
+				for (int j = 0; j < this.layers[i]; j++)
 				{
-					this.Weights[index].Add(new List<float>());
-					this.Biases[index].Add(NeuroHelper.RandomNext());
-
-					for (int k = 0; k < neuronsInPrevLayer; k++)
+					float[] neuronWeights = new float[this.layers[i - 1]];
+					if (presetBiases != null && presetBiases.Length >= i && presetBiases[i - 1].Length >= j)
 					{
-						this.Weights[index][j].Add(NeuroHelper.RandomNext());
+						layerBiases[j] = presetBiases[i - 1][j];
 					}
+					else
+					{
+						layerBiases[j] = NeuroHelper.RandomNext();
+					}
+
+					for (int k = 0; k < neuronWeights.Length; k++)
+					{
+						if (presetWeights != null && presetWeights.Length >= i && presetWeights[i - 1].Length >= j && presetWeights[i - 1][j].Length >= k)
+						{
+							neuronWeights[k] = presetWeights[i - 1][j][k];
+						}
+						else
+						{
+							neuronWeights[k] = NeuroHelper.RandomNext();
+						}
+					}
+					layerWeights.Add(neuronWeights);
 				}
+				biases.Add(layerBiases);
+				weights.Add(layerWeights.ToArray());
 			}
+
+			this.Weights = weights.ToArray();
+			this.Biases = biases.ToArray();
 		}
 
-		private void InitWeightsAndBiases(List<List<List<float>>> weights, List<List<float>> biases)
-		{
-			this.Weights = new List<List<List<float>>>();
-			this.Biases = new List<List<float>>();
-
-			for (int i = 0; i < weights.Count; i++)
-			{
-				this.Weights.Add(new List<List<float>>());
-				this.Biases.Add(new List<float>());
-
-				for (int j = 0; j < weights[i].Count; j++)
-				{
-					this.Weights[i].Add(new List<float>());
-					this.Biases[i].Add(biases[i][j]);
-
-					for (int k = 0; k < weights[i][j].Count; k++)
-					{
-						this.Weights[i][j].Add(weights[i][j][k]);
-					}
-				}
-			}
-		}
-
-		public List<float> FeedForward(float[] inputs)
+		public float[] FeedForward(float[] inputs)
 		{
 			for (int i = 0; i < inputs.Length; i++)
 			{
@@ -134,11 +131,11 @@ namespace NeuralNetwork
 
 			for (int i = 1; i < this.LayerCount; i++)
 			{
-				for (int j = 0; j < this.Neurons[i].Count; j++)
+				for (int j = 0; j < this.Neurons[i].Length; j++)
 				{
 					float value = 0f;
 
-					for (int k = 0; k < this.Neurons[i - 1].Count; k++)
+					for (int k = 0; k < this.Neurons[i - 1].Length; k++)
 					{
 						value += this.Weights[i - 1][j][k] * this.Neurons[i - 1][k];
 					}
@@ -157,31 +154,28 @@ namespace NeuralNetwork
 			{
 				if (NeuroHelper.RandomNext(0f, 1f) <= NeuroHelper.LayerMutationChance)
 				{
-					this.layers[i]++; // increase the neuroncount of the layer
-					this.Neurons[i].Add(0f); // add the new neuron
-					this.Biases[i].Add(NeuroHelper.RandomNext()); // add a new bias for the new neuron
-					this.Weights[i].Add(new List<float>());
-
-					for (int j = 0; j < this.Weights[i - 1].Count; j++) // add new weight from each neuron in previous layer to the new mutated neuron
+					List<float[]> neurons = new List<float[]>();
+					for (int l = 0; l < this.layers.Length; l++)
 					{
-						this.Weights[i][this.Weights[i].Count].Add(NeuroHelper.RandomNext()); // only add to the last neuron-weights-list
-					}
-
-					if (i < this.LayerCount - 1) // if not output-layer
-					{
-						for (int j = 0; j < this.Weights[i + 1].Count; j++) // add new weight to each neruon in next layer from the new mutated neuron
+						float[] layer = new float[this.layers[l] + 1];
+						for (int j = 0; j < this.layers[l]; j++)
 						{
-							this.Weights[i + 1][j].Add(NeuroHelper.RandomNext());
+							layer[j] = 0f;
 						}
+						neurons.Add(layer);
 					}
+					this.Neurons = neurons.ToArray();
+
+					this.layers[i]++; // increase the neuroncount of the layer
+					this.InitWeightsAndBiases(this.Weights, this.Biases);
 				}
 
 				if (NeuroHelper.RandomNext(0f, 1f) <= NeuroHelper.NeuronWeightMutationChance)
 				{
-					int neuronIndex = NeuroHelper.RandomNext(0, this.Neurons[i].Count);
-					int weightIndex = NeuroHelper.RandomNext(0, this.Weights[i][neuronIndex].Count);
+					int neuronIndex = NeuroHelper.RandomNext(0, this.Neurons[i].Length);
+					int weightIndex = NeuroHelper.RandomNext(0, this.Weights[i][neuronIndex].Length);
 
-					if (weightIndex < this.Weights.Count)
+					if (weightIndex < this.Weights.Length)
 					{
 						this.Weights[i][neuronIndex][weightIndex] += NeuroHelper.RandomNext(-NeuroHelper.NeuronWeightMutationDefaultValue, NeuroHelper.NeuronWeightMutationDefaultValue);
 					}
@@ -189,7 +183,7 @@ namespace NeuralNetwork
 
 				if (NeuroHelper.RandomNext(0f, 1f) <= NeuroHelper.NeuronBiasMutationChance)
 				{
-					int neuronIndex = NeuroHelper.RandomNext(0, this.Neurons[i].Count);
+					int neuronIndex = NeuroHelper.RandomNext(0, this.Neurons[i].Length);
 
 					this.Biases[i][neuronIndex] += NeuroHelper.RandomNext(-NeuroHelper.NeuronBiasMutationDefaultValue, NeuroHelper.NeuronBiasMutationDefaultValue);
 				}
@@ -200,14 +194,14 @@ namespace NeuralNetwork
 		{
 			NeuroNet child = InitChild(mother, father);
 
-			for (int i = 0; i < child.Weights.Count; i++)
+			for (int i = 0; i < child.Weights.Length; i++)
 			{
-				for (int j = 0; j < child.Weights[i].Count; j++)
+				for (int j = 0; j < child.Weights[i].Length; j++)
 				{
-					for (int k = 0; k < child.Weights[i][j].Count; k++)
+					for (int k = 0; k < child.Weights[i][j].Length; k++)
 					{
-						if (!(k >= mother.Weights[i][j].Count && mother.Weights[i][j].Count < father.Weights[i][j].Count)
-							&& ((k >= father.Weights[i][j].Count && mother.Weights[i][j].Count > father.Weights[i][j].Count) || NeuroHelper.RandomNext(0, 100) > 50))
+						if (!(k >= mother.Weights[i][j].Length && mother.Weights[i][j].Length < father.Weights[i][j].Length)
+							&& ((k >= father.Weights[i][j].Length && mother.Weights[i][j].Length > father.Weights[i][j].Length) || NeuroHelper.RandomNext(0, 100) > 50))
 						{
 							child.Weights[i][j][k] = mother.Weights[i][j][k];
 						}
@@ -217,8 +211,8 @@ namespace NeuralNetwork
 						}
 					}
 
-					if (!(j >= mother.Biases[i].Count && mother.Biases[i].Count < father.Biases[i].Count)
-							&& ((j >= father.Biases[i].Count && mother.Biases[i].Count > father.Biases[i].Count) || NeuroHelper.RandomNext(0, 100) > 50))
+					if (!(j >= mother.Biases[i].Length && mother.Biases[i].Length < father.Biases[i].Length)
+							&& ((j >= father.Biases[i].Length && mother.Biases[i].Length > father.Biases[i].Length) || NeuroHelper.RandomNext(0, 100) > 50))
 					{
 						child.Biases[i][j] = mother.Biases[i][j];
 					}
@@ -270,9 +264,9 @@ namespace NeuralNetwork
 			int idx = 0;
 			for (int i = 0; i < this.LayerCount; i++)
 			{
-				for (int j = 0; j < this.Weights[i].Count; j++)
+				for (int j = 0; j < this.Weights[i].Length; j++)
 				{
-					for (int k = 0; k < this.Weights[i][j].Count; k++)
+					for (int k = 0; k < this.Weights[i][j].Length; k++)
 					{
 						this.Weights[i][j][k] = genome.Weights[idx];
 
@@ -284,7 +278,7 @@ namespace NeuralNetwork
 			idx = 0;
 			for (int i = 0; i < this.LayerCount; i++)
 			{
-				for (int j = 0; j < this.Biases[i].Count; j++)
+				for (int j = 0; j < this.Biases[i].Length; j++)
 				{
 					this.Biases[i][j] = genome.Biases[idx];
 
