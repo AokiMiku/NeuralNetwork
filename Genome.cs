@@ -78,7 +78,7 @@ namespace NeuralNetwork
 			stringifiedGenome += genome.LayerCount + seperator.ToString();
 			stringifiedGenome += genome.NeuronsPerLayer.ToString('_') + seperator;
 			stringifiedGenome += genome.Weights.ToString('_') + seperator;
-			stringifiedGenome += genome.Biases.ToString('_');
+			stringifiedGenome += genome.Biases.ToString('_') + seperator;
 
 			using (StreamWriter streamWriter = new StreamWriter(SAVE_DIRECTORY + fileName + ".aps"))
 			{
@@ -115,7 +115,7 @@ namespace NeuralNetwork
 
 		private static string ExtractValues(string stringifiedGenome, List<float> listToFill)
 		{
-			while (stringifiedGenome.IndexOf(seperator) > stringifiedGenome.IndexOf('_'))
+			while (stringifiedGenome.IndexOf(seperator) > stringifiedGenome.IndexOf('_') && stringifiedGenome.IndexOf('_') != -1)
 			{
 				listToFill.Add(float.Parse(stringifiedGenome.Substring(0, stringifiedGenome.IndexOf('_'))));
 
@@ -124,7 +124,12 @@ namespace NeuralNetwork
 
 			if (stringifiedGenome.Contains(seperator))
 			{
+				listToFill.Add(float.Parse(stringifiedGenome.Substring(0, stringifiedGenome.IndexOf(seperator))));
 				stringifiedGenome = stringifiedGenome.Substring(stringifiedGenome.IndexOf(seperator) + 1);
+			}
+			else
+			{
+				listToFill.Add(float.Parse(stringifiedGenome.Substring(0)));
 			}
 			return stringifiedGenome;
 		}

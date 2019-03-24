@@ -173,11 +173,11 @@ namespace NeuralNetwork
 				if (NeuroHelper.RandomNext(0f, 1f) <= NeuroHelper.NeuronWeightMutationChance)
 				{
 					int neuronIndex = NeuroHelper.RandomNext(0, this.Neurons[i].Length);
-					int weightIndex = NeuroHelper.RandomNext(0, this.Weights[i][neuronIndex].Length);
+					int weightIndex = NeuroHelper.RandomNext(0, this.Weights[i - 1][neuronIndex].Length);
 
 					if (weightIndex < this.Weights.Length)
 					{
-						this.Weights[i][neuronIndex][weightIndex] += NeuroHelper.RandomNext(-NeuroHelper.NeuronWeightMutationDefaultValue, NeuroHelper.NeuronWeightMutationDefaultValue);
+						this.Weights[i - 1][neuronIndex][weightIndex] += NeuroHelper.RandomNext(-NeuroHelper.NeuronWeightMutationDefaultValue, NeuroHelper.NeuronWeightMutationDefaultValue);
 					}
 				}
 
@@ -185,7 +185,7 @@ namespace NeuralNetwork
 				{
 					int neuronIndex = NeuroHelper.RandomNext(0, this.Neurons[i].Length);
 
-					this.Biases[i][neuronIndex] += NeuroHelper.RandomNext(-NeuroHelper.NeuronBiasMutationDefaultValue, NeuroHelper.NeuronBiasMutationDefaultValue);
+					this.Biases[i - 1][neuronIndex] += NeuroHelper.RandomNext(-NeuroHelper.NeuronBiasMutationDefaultValue, NeuroHelper.NeuronBiasMutationDefaultValue);
 				}
 			}
 		}

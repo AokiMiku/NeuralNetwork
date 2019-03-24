@@ -4,15 +4,19 @@ using System.Linq;
 
 namespace NeuralNetwork
 {
-	internal static class NeuroHelper
+	public static class NeuroHelper
 	{
 		private static Random Random = new Random(DateTime.Today.Millisecond);
 
-		public const float NeuronWeightMutationChance = 0.25f;
-		public const float NeuronBiasMutationChance = 0.1f;
-		public const float LayerMutationChance = 0.001f;
-		public const float NeuronWeightMutationDefaultValue = 0.2f;
-		public const float NeuronBiasMutationDefaultValue = 0.2f;
+		public static float NeuronWeightMutationChance { get; set; } = 0.25f;
+
+		public static float NeuronBiasMutationChance { get; set; } = 0.1f;
+
+		public static float LayerMutationChance { get; set; } = 0.001f;
+
+		public static float NeuronWeightMutationDefaultValue { get; set; } = 0.2f;
+
+		public static float NeuronBiasMutationDefaultValue { get; set; } = 0.2f;
 
 		public static float RandomNext(float min = -1f, float max = 1f)
 		{
