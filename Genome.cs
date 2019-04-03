@@ -70,6 +70,14 @@ namespace NeuralNetwork
 			this.Biases = Biases.ToArray();
 		}
 
+		static Genome()
+		{
+			if (!Directory.Exists(SAVE_DIRECTORY))
+			{
+				Directory.CreateDirectory(SAVE_DIRECTORY);
+			}
+		}
+
 		public static void Save(NeuroNet neuroNet, string fileName)
 		{
 			Genome genome = new Genome(neuroNet);
@@ -80,7 +88,7 @@ namespace NeuralNetwork
 			stringifiedGenome += genome.Weights.ToString('_') + seperator;
 			stringifiedGenome += genome.Biases.ToString('_') + seperator;
 
-			using (StreamWriter streamWriter = new StreamWriter(SAVE_DIRECTORY + fileName + ".aps"))
+			using (StreamWriter streamWriter = new StreamWriter(SAVE_DIRECTORY + fileName + ".genome"))
 			{
 				streamWriter.Write(stringifiedGenome);
 				streamWriter.Flush();
@@ -92,7 +100,7 @@ namespace NeuralNetwork
 		{
 			string stringifiedGenome = "";
 
-			using (StreamReader streamReader = new StreamReader(SAVE_DIRECTORY + fileName + ".aps"))
+			using (StreamReader streamReader = new StreamReader(SAVE_DIRECTORY + fileName + ".genome"))
 			{
 				stringifiedGenome = streamReader.ReadToEnd();
 				streamReader.Close();

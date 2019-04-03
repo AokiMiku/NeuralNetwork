@@ -262,7 +262,7 @@ namespace NeuralNetwork
 			this.InitWeightsAndBiases();
 
 			int idx = 0;
-			for (int i = 0; i < this.LayerCount; i++)
+			for (int i = 0; i < this.LayerCount - 1; i++)
 			{
 				for (int j = 0; j < this.Weights[i].Length; j++)
 				{
@@ -276,7 +276,7 @@ namespace NeuralNetwork
 			}
 
 			idx = 0;
-			for (int i = 0; i < this.LayerCount; i++)
+			for (int i = 0; i < this.LayerCount - 1; i++)
 			{
 				for (int j = 0; j < this.Biases[i].Length; j++)
 				{
