@@ -249,6 +249,27 @@ namespace NeuralNetwork
 			child.InitWeightsAndBiases();
 			return child;
 		}
+		public static void Selection(Dictionary<NeuroNet, int> scoredNeuroNets)
+		{
+			IEnumerable<KeyValuePair<NeuroNet, int>> sortedBrains = scoredNeuroNets.OrderBy(x => x.Value);
+			for (int i = 0; i < sortedBrains.Count(); i++)
+			{
+				if (i <= sortedBrains.Count() / 2 && NeuroHelper.RandomNext(0, sortedBrains.Count() * 2) < ((sortedBrains.Count() * 2 - 2) - i * 2))
+				{
+					if (scoredNeuroNets.Count >= 2)
+					{
+						scoredNeuroNets.Remove(sortedBrains.ElementAt(i).Key);
+					}
+				}
+				if (i > sortedBrains.Count() / 2 && NeuroHelper.RandomNext(0, sortedBrains.Count() * 2) < (sortedBrains.Count() * 2) - i * 2)
+				{
+					if (scoredNeuroNets.Count >= 2)
+					{
+						scoredNeuroNets.Remove(sortedBrains.ElementAt(i).Key);
+					}
+				}
+			}
+		}
 
 		private void LoadFromGenome(Genome genome)
 		{
